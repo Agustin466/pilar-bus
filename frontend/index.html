@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PilarBus – Colectivos en tiempo real</title>
+  <meta name="description" content="Seguí los colectivos de Pilar en tiempo real, recibí alertas de desvíos, consultá tu SUBE y enviá reclamos.">
+  <meta name="theme-color" content="#0D47A1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="encabezado">
+    <a class="marca" href="#mapa">🚌 PilarBus</a>
+    <nav class="menu" id="menu">
+      <a href="#mapa" data-vista="mapa">Mapa</a>
+      <a href="#reclamos" data-vista="reclamos">Reclamos</a>
+      <a href="#sube" data-vista="sube">SUBE</a>
+      <a href="#admin" data-vista="admin" class="solo-admin" hidden>Admin</a>
+      <a href="#cuenta" data-vista="cuenta" id="enlace-cuenta">Ingresar</a>
+    </nav>
+  </header>
+
+  <div class="aviso-demo" id="aviso-demo" hidden>
+    Modo demo: los colectivos son simulados y los datos se guardan solo en este navegador.
+  </div>
+
+  <main>
+    <!-- MAPA -->
+    <section class="vista vista-mapa" id="vista-mapa">
+      <div class="chips" id="chips-lineas" aria-label="Líneas"></div>
+      <div class="mapa-contenedor">
+        <div id="mapa" aria-label="Mapa de recorridos"></div>
+        <aside class="panel">
+          <div id="info-linea"></div>
+          <div id="lista-desvios"></div>
+          <div id="arribos"></div>
+          <button class="boton secundario solo-demo" id="btn-simular-desvio" hidden>Simular desvío</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- RECLAMOS -->
+    <section class="vista" id="vista-reclamos" hidden>
+      <h1>Reclamos</h1>
+      <div class="requiere-sesion"></div>
+      <div class="con-sesion columnas">
+        <form class="tarjeta" id="form-reclamo">
+          <h2>Nuevo reclamo</h2>
+          <label>Categoría
+            <select name="categoria" required>
+              <option value="demora">Demora</option>
+              <option value="conduccion">Conducción</option>
+              <option value="limpieza">Limpieza</option>
+              <option value="estado_unidad">Estado de la unidad</option>
+              <option value="trato">Trato del personal</option>
+              <option value="app">Problema con la app</option>
+              <option value="otro">Otro</option>
+            </select>
+          </label>
+          <label>Línea (opcional)
+            <select name="linea_id" id="reclamo-linea"><option value="">—</option></select>
+          </label>
+          <label>Interno (opcional)
+            <select name="colectivo_id" id="reclamo-colectivo"><option value="">—</option></select>
+          </label>
+          <label>Descripción
+            <textarea name="descripcion" rows="4" minlength="10" maxlength="2000" required placeholder="Contanos qué pasó (mínimo 10 caracteres)"></textarea>
+          </label>
+          <label>Foto (opcional)
+            <input type="file" name="foto" accept="image/jpeg,image/png,image/webp">
+          </label>
+          <button class="boton" type="submit">Enviar reclamo</button>
+        </form>
+        <div>
+          <h2>Mis reclamos</h2>
+          <div id="lista-reclamos"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBE -->
+    <section class="vista" id="vista-sube" hidden>
+      <h1>Mi SUBE</h1>
+      <div class="requiere-sesion"></div>
+      <div class="con-sesion" id="contenido-sube"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="vista" id="vista-admin" hidden>
+      <h1>Administración</h1>
+      <div class="columnas">
+        <form class="tarjeta" id="form-desvio">
+          <h2>Cargar desvío</h2>
+          <label>Línea <select name="linea_id" id="desvio-linea" required></select></label>
+          <label>Título <input name="titulo" required minlength="3" maxlength="150" placeholder="Corte por obra en Ruta 26"></label>
+          <label>Descripción <textarea name="descripcion" rows="3" maxlength="1000"></textarea></label>
+          <button class="boton" type="submit">Publicar desvío</button>
+          <h3>Desvíos activos</h3>
+          <div id="admin-desvios"></div>
+        </form>
+        <div>
+          <h2>Reclamos recibidos</h2>
+          <label class="filtro">Estado
+            <select id="filtro-estado">
+              <option value="">Todos</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="en_revision">En revisión</option>
+              <option value="resuelto">Resuelto</option>
+              <option value="rechazado">Rechazado</option>
+            </select>
+          </label>
+          <div id="admin-reclamos"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUENTA -->
+    <section class="vista" id="vista-cuenta" hidden>
+      <div id="contenido-cuenta"></div>
+    </section>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
